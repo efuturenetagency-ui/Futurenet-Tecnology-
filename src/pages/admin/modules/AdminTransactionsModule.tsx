@@ -637,7 +637,7 @@ export const AdminTransactionsModule: React.FC = () => {
             </div>
 
             {/* Receipt Body */}
-            <div className="bg-[#080B14] border border-[#263249] rounded-xl p-5 space-y-4 font-mono text-xs">
+            <div className="printable-document-root bg-[#080B14] border border-[#263249] rounded-xl p-6 sm:p-8 space-y-4 font-mono text-xs">
               <div className="flex justify-between border-b border-[#263249] pb-3">
                 <span className="text-slate-400">Transaction Ref:</span>
                 <span className="text-cyan-300 font-bold">

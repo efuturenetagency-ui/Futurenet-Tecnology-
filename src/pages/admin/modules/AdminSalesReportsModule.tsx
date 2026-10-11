@@ -10,6 +10,7 @@ import {
   BarChart3,
   ArrowUpRight,
   Sparkles,
+  Printer,
 } from 'lucide-react';
 import { getOrders, getSubscriptions, getTransactions } from '../../../lib/dataService';
 import { OrderItem, SubscriptionItem, TransactionItem } from '../../../types';
@@ -86,7 +87,7 @@ export const AdminSalesReportsModule: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="printable-document-root space-y-6">
       {/* Top Banner */}
       <div className="bg-[#101626] border border-[#263249] rounded-2xl p-6 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -104,6 +105,12 @@ export const AdminSalesReportsModule: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => window.print()}
+              className="px-4 py-2.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 hover:bg-purple-500/30 text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors"
+            >
+              <Printer className="w-4 h-4" /> Print A4 Report
+            </button>
             <button
               onClick={exportCsv}
               className="px-4 py-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 text-xs font-semibold flex items-center gap-2 cursor-pointer"

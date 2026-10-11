@@ -88,6 +88,13 @@ export default function App() {
 
     initData();
 
+    // Handle initial hash like /#about
+    if (window.location.hash === '#about') {
+      setTimeout(() => {
+        document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    }
+
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
@@ -101,8 +108,18 @@ export default function App() {
       !anchor.getAttribute('target') &&
       !anchor.getAttribute('download')
     ) {
-      e.preventDefault();
       const href = anchor.getAttribute('href')!;
+      if (href.includes('#about')) {
+        e.preventDefault();
+        window.history.pushState({}, '', '/#about');
+        setCurrentPath('/');
+        setTimeout(() => {
+          const el = document.getElementById('about');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 60);
+        return;
+      }
+      e.preventDefault();
       window.history.pushState({}, '', href);
       setCurrentPath(href.split('?')[0]);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -126,7 +143,13 @@ export default function App() {
 
   // Route matching
   let pageContent = null;
-  if (currentPath === '/') {
+  if (currentPath === '/' || currentPath === '/about') {
+    if (currentPath === '/about') {
+      window.history.replaceState({}, '', '/#about');
+      setTimeout(() => {
+        document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
     pageContent = (
       <HomePage
         services={services}
@@ -138,8 +161,6 @@ export default function App() {
         onOpenOrderModal={s => openOrderModal(s)}
       />
     );
-  } else if (currentPath === '/about') {
-    pageContent = <AboutPage onOpenOrderModal={() => openOrderModal()} />;
   } else if (currentPath === '/services') {
     const searchParams = new URLSearchParams(window.location.search);
     const cat = searchParams.get('category') || undefined;

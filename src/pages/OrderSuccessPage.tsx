@@ -7,6 +7,7 @@ import {
   FileText,
   UserCheck,
   Rocket,
+  Printer,
 } from 'lucide-react';
 import { WhatsAppButton } from '../components/common/WhatsAppButton';
 
@@ -18,7 +19,7 @@ export const OrderSuccessPage: React.FC = () => {
   return (
     <div className="pt-36 pb-24 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto space-y-12">
       {/* Success Badge & Headline */}
-      <div className="p-8 sm:p-12 rounded-3xl bg-[#101626] border border-cyan-500/30 text-center space-y-6 shadow-[0_0_50px_rgba(34,211,238,0.15)]">
+      <div className="printable-document-root p-8 sm:p-12 rounded-3xl bg-[#101626] border border-cyan-500/30 text-center space-y-6 shadow-[0_0_50px_rgba(34,211,238,0.15)]">
         <div className="w-20 h-20 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 animate-pulse">
           <CheckCircle2 className="w-10 h-10" />
         </div>
@@ -50,6 +51,13 @@ export const OrderSuccessPage: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+          >
+            <Printer className="w-4 h-4" /> Print A4 Receipt
+          </button>
           <WhatsAppButton
             serviceName={`Order ${orderRef}`}
             customMessage={`Hello Futurent Technology, I just submitted project order reference ${orderRef}. I would like to confirm receipt and discuss kickoff details.`}

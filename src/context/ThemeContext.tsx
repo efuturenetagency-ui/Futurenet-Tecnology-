@@ -3,6 +3,33 @@ import { SiteSettings, SiteColors, ThemeId } from '../types';
 import { INITIAL_SITE_SETTINGS } from '../lib/seedData';
 import { getSiteSettings, updateSiteSettings as persistSiteSettings } from '../lib/dataService';
 
+export type ThemeMode = 'dark' | 'light';
+export type CurrencyCode = 'USD' | 'BDT';
+
+export const DEFAULT_DARK_COLORS: SiteColors = {
+  primaryBg: '#080B14',
+  secondaryBg: '#101626',
+  cardBg: '#141C2E',
+  primaryAccent: '#4F8CFF',
+  secondaryAccent: '#8B5CF6',
+  neonCyan: '#22D3EE',
+  primaryText: '#F8FAFC',
+  secondaryText: '#A7B2C8',
+  borders: '#263249',
+};
+
+export const DEFAULT_LIGHT_COLORS: SiteColors = {
+  primaryBg: '#F8FAFC',
+  secondaryBg: '#FFFFFF',
+  cardBg: '#FFFFFF',
+  primaryAccent: '#2563EB',
+  secondaryAccent: '#7C3AED',
+  neonCyan: '#0284C7',
+  primaryText: '#0F172A',
+  secondaryText: '#475569',
+  borders: '#E2E8F0',
+};
+
 export const THEME_PRESETS: Record<ThemeId, { name: string; description: string; colors: SiteColors }> = {
   cyber_dark: {
     name: 'Cyber Dark (2026)',
@@ -53,6 +80,15 @@ export const THEME_PRESETS: Record<ThemeId, { name: string; description: string;
 
 interface ThemeContextType {
   settings: SiteSettings;
+  themeMode: ThemeMode;
+  toggleThemeMode: () => void;
+  setThemeMode: (mode: ThemeMode) => void;
+  currency: CurrencyCode;
+  setCurrency: (c: CurrencyCode) => void;
+  usdToBdtRate: number;
+  formatPrice: (amountInUsd: number, customBdtPrice?: number) => string;
+  convertPrice: (amountInUsd: number, customBdtPrice?: number) => { amount: number; currency: CurrencyCode; formatted: string };
+  isCyberEnabled: boolean;
   currentThemeId: ThemeId;
   setThemePreset: (id: ThemeId) => Promise<void>;
   updateSettings: (newSettings: Partial<SiteSettings>) => Promise<void>;
@@ -64,14 +100,48 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [settings, setSettings] = useState<SiteSettings>(INITIAL_SITE_SETTINGS);
+
+  // 1. Two Global Themes: Light Mode and Dark Mode
+  const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('ft_theme_mode');
+      if (saved === 'light' || saved === 'dark') return saved;
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return 'light';
+      }
+    }
+    return 'dark';
+  });
+
+  // 2. Currency Selector (USD & BDT)
+  const [currency, setCurrencyState] = useState<CurrencyCode>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('ft_currency');
+      if (saved === 'USD' || saved === 'BDT') return saved;
+    }
+    return 'USD';
+  });
+
   const [currentThemeId, setCurrentThemeId] = useState<ThemeId>(() => {
-    return (localStorage.getItem('ft_theme_preset') as ThemeId) || 'cyber_dark';
+    return (typeof window !== 'undefined' && (localStorage.getItem('ft_theme_preset') as ThemeId)) || 'cyber_dark';
   });
   const [loading, setLoading] = useState(true);
 
-  const applyThemeVariables = (colors: SiteColors) => {
+  const applyThemeVariables = (colors: SiteColors, mode: ThemeMode) => {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
+
+    // Set class attribute for tailwind / CSS targeting
+    if (mode === 'light') {
+      root.classList.add('light');
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    } else {
+      root.classList.add('dark');
+      root.classList.remove('light');
+      root.setAttribute('data-theme', 'dark');
+    }
+
     root.style.setProperty('--color-primary-bg', colors.primaryBg);
     root.style.setProperty('--color-secondary-bg', colors.secondaryBg);
     root.style.setProperty('--color-card-bg', colors.cardBg);
@@ -83,14 +153,70 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     root.style.setProperty('--color-borders', colors.borders);
   };
 
+  const getEffectiveColors = (set: SiteSettings, mode: ThemeMode): SiteColors => {
+    if (mode === 'light') {
+      return set.lightColors || DEFAULT_LIGHT_COLORS;
+    }
+    return set.darkColors || set.colors || DEFAULT_DARK_COLORS;
+  };
+
+  const setThemeMode = (mode: ThemeMode) => {
+    setThemeModeState(mode);
+    try {
+      localStorage.setItem('ft_theme_mode', mode);
+    } catch {}
+    const colors = getEffectiveColors(settings, mode);
+    applyThemeVariables(colors, mode);
+  };
+
+  const toggleThemeMode = () => {
+    const nextMode: ThemeMode = themeMode === 'dark' ? 'light' : 'dark';
+    setThemeMode(nextMode);
+  };
+
+  const setCurrency = (c: CurrencyCode) => {
+    setCurrencyState(c);
+    try {
+      localStorage.setItem('ft_currency', c);
+    } catch {}
+  };
+
+  const usdToBdtRate = settings.currencySettings?.usdToBdtRate || 120;
+
+  const convertPrice = (amountInUsd: number, customBdtPrice?: number) => {
+    if (currency === 'BDT') {
+      const fixedBdt = customBdtPrice !== undefined && customBdtPrice !== null ? customBdtPrice : undefined;
+      const amount = fixedBdt !== undefined ? fixedBdt : Math.round(amountInUsd * usdToBdtRate);
+      return {
+        amount,
+        currency: 'BDT' as CurrencyCode,
+        formatted: `৳${amount.toLocaleString()}`,
+      };
+    }
+    return {
+      amount: amountInUsd,
+      currency: 'USD' as CurrencyCode,
+      formatted: `$${amountInUsd.toLocaleString()}`,
+    };
+  };
+
+  const formatPrice = (amountInUsd: number, customBdtPrice?: number): string => {
+    return convertPrice(amountInUsd, customBdtPrice).formatted;
+  };
+
   const load = async () => {
     try {
       const data = await getSiteSettings();
       setSettings(data);
-      applyThemeVariables(data.colors);
+      const activeColors = getEffectiveColors(data, themeMode);
+      applyThemeVariables(activeColors, themeMode);
+      if (data.currencySettings?.defaultCurrency && !localStorage.getItem('ft_currency')) {
+        setCurrencyState(data.currencySettings.defaultCurrency);
+      }
     } catch (e) {
       console.warn('Using initial settings');
-      applyThemeVariables(INITIAL_SITE_SETTINGS.colors);
+      const activeColors = getEffectiveColors(INITIAL_SITE_SETTINGS, themeMode);
+      applyThemeVariables(activeColors, themeMode);
     } finally {
       setLoading(false);
     }
@@ -105,20 +231,34 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('ft_theme_preset', id);
     const selected = THEME_PRESETS[id];
     if (selected) {
-      await updateSettings({ colors: selected.colors });
+      if (themeMode === 'dark') {
+        await updateSettings({ colors: selected.colors, darkColors: selected.colors });
+      } else {
+        await updateSettings({ colors: selected.colors });
+      }
     }
   };
 
   const updateSettings = async (newSettings: Partial<SiteSettings>) => {
     const updated = await persistSiteSettings(newSettings);
     setSettings(updated);
-    applyThemeVariables(updated.colors);
+    const activeColors = getEffectiveColors(updated, themeMode);
+    applyThemeVariables(activeColors, themeMode);
   };
 
   return (
     <ThemeContext.Provider
       value={{
         settings,
+        themeMode,
+        toggleThemeMode,
+        setThemeMode,
+        currency,
+        setCurrency,
+        usdToBdtRate,
+        formatPrice,
+        convertPrice,
+        isCyberEnabled: settings.cyberStyleEnabled !== false,
         currentThemeId,
         setThemePreset,
         updateSettings,
@@ -138,3 +278,4 @@ export function useSiteSettings() {
   }
   return context;
 }
+

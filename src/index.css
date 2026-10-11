@@ -12,6 +12,84 @@
   --color-borders: #263249;
 }
 
+html.light,
+[data-theme="light"] {
+  --color-primary-bg: #F8FAFC;
+  --color-secondary-bg: #FFFFFF;
+  --color-card-bg: #FFFFFF;
+  --color-primary-accent: #2563EB;
+  --color-secondary-accent: #7C3AED;
+  --color-neon-cyan: #0284C7;
+  --color-primary-text: #0F172A;
+  --color-secondary-text: #475569;
+  --color-borders: #E2E8F0;
+}
+
+/* Light Mode Utility Overrides for Seamless Public Theme Switching */
+html.light body,
+html.light .app-container {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+html.light .bg-\[\#080B14\] {
+  background-color: #F8FAFC !important;
+}
+
+html.light .bg-\[\#080B14\]\/90 {
+  background-color: rgba(248, 250, 252, 0.92) !important;
+}
+
+html.light .bg-\[\#101626\] {
+  background-color: #FFFFFF !important;
+}
+
+html.light .bg-\[\#101626\]\/80 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html.light .bg-\[\#141C2E\] {
+  background-color: #F1F5F9 !important;
+}
+
+html.light .border-\[\#263249\] {
+  border-color: #E2E8F0 !important;
+}
+
+html.light .border-\[\#263249\]\/80,
+html.light .border-\[\#263249\]\/60 {
+  border-color: #E2E8F0 !important;
+}
+
+html.light .text-\[\#F8FAFC\] {
+  color: #0F172A !important;
+}
+
+html.light .text-\[\#A7B2C8\] {
+  color: #475569 !important;
+}
+
+html.light .text-white:not(.preserve-white-text):not(.preserve-white-text *) {
+  color: #0F172A !important;
+}
+
+html.light .text-slate-300:not(.preserve-white-text *) {
+  color: #334155 !important;
+}
+
+html.light .text-slate-400:not(.preserve-white-text *) {
+  color: #64748B !important;
+}
+
+/* Maintain high-contrast text on action buttons, chips, and gradients */
+html.light .preserve-white-text,
+html.light .preserve-white-text *,
+html.light .bg-gradient-to-r.text-white,
+html.light button.bg-gradient-to-r,
+html.light a.bg-gradient-to-r {
+  color: #FFFFFF !important;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -33,36 +111,104 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #080B14;
+  background: var(--color-primary-bg, #080B14);
 }
 ::-webkit-scrollbar-thumb {
-  background: #263249;
+  background: var(--color-borders, #263249);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #4F8CFF;
+  background: var(--color-primary-accent, #4F8CFF);
 }
 
-/* Standard A4 Print Rules */
+/* ==================== PROFESSIONAL A4 PRINTING SYSTEM ==================== */
 @media print {
   @page {
-    size: A4;
-    margin: 12mm;
+    size: A4 portrait;
+    margin: 12mm 15mm 15mm 15mm;
   }
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
+  
+  html, body {
+    background: #FFFFFF !important;
+    color: #111827 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  aside, nav, header, footer, button, .no-print {
+
+  /* Isolate strictly the document intended for printing */
+  body > * {
+    visibility: hidden !important;
+  }
+
+  /* Only display the designated printable document */
+  .printable-document-root,
+  .printable-document-root * {
+    visibility: visible !important;
+  }
+
+  .printable-document-root {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #FFFFFF !important;
+    color: #111827 !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 999999 !important;
+  }
+
+  /* Screen-only controls removal */
+  .no-print,
+  nav,
+  aside,
+  header,
+  footer,
+  button,
+  .fixed,
+  .sticky {
     display: none !important;
   }
-  .printable-invoice-sheet {
-    background: #ffffff !important;
-    color: #111827 !important;
-    border: 1px solid #e5e7eb !important;
-    padding: 16px !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
+
+  /* Prevent awkward page breaks across rows and cards */
+  table, tr, td, th, .avoid-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+    color: #0F172A !important;
+  }
+
+  .print-text-muted {
+    color: #64748B !important;
+  }
+
+  .print-border {
+    border-color: #CBD5E1 !important;
+  }
+
+  .print-bg-subtle {
+    background-color: #F8FAFC !important;
   }
 }
+
 

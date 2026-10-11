@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { SubscriptionPlan, BillingInterval, PaymentGatewayId, SubscriptionItem } from '../../types';
 import { createSubscription, createTransaction } from '../../lib/dataService';
+import { useSiteSettings } from '../../context/ThemeContext';
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   initialInterval = 'monthly',
   onSuccess,
 }) => {
+  const { formatPrice, currency, convertPrice } = useSiteSettings();
   const [step, setStep] = useState<'details' | 'payment' | 'confirmation'>('details');
   const [interval, setInterval] = useState<BillingInterval>(initialInterval);
 
@@ -237,7 +239,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                     )}
                     <span className="font-bold text-xs block">{item.label}</span>
                     <span className="font-mono text-cyan-300 text-sm font-bold block mt-1">
-                      ${item.price}
+                      {formatPrice(item.price)}
                     </span>
                   </button>
                 ))}
@@ -301,7 +303,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 <span className="font-bold text-white">Auto-renews until cancelled</span>
               </div>
               <span className="text-xl font-bold font-mono text-emerald-400">
-                ${price} {plan.currency}
+                {formatPrice(price)}
               </span>
             </div>
 
@@ -381,7 +383,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
             <div className="p-4 rounded-2xl bg-[#080B14] border border-[#263249] flex items-center justify-between text-xs">
               <span className="text-slate-400">Total Settlement Amount:</span>
               <span className="text-lg font-bold font-mono text-emerald-400">
-                ${price} {plan.currency}
+                {formatPrice(price)}
               </span>
             </div>
 
@@ -397,7 +399,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 </>
               ) : (
                 <>
-                  <Lock className="w-3.5 h-3.5" /> Pay & Activate Retainer (${price})
+                  <Lock className="w-3.5 h-3.5" /> Pay & Activate Retainer ({formatPrice(price)})
                 </>
               )}
             </button>

@@ -138,7 +138,7 @@ export const Footer: React.FC<FooterProps> = ({ categories, onOpenOrderModal }) 
                 </a>
               </li>
               <li>
-                <a href="/about" className="hover:text-cyan-300 transition-colors">
+                <a href="/#about" className="hover:text-cyan-300 transition-colors">
                   About Us
                 </a>
               </li>

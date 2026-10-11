@@ -17,6 +17,7 @@ import {
 import { CustomRequestItem } from '../types';
 import { createCustomRequest } from '../lib/dataService';
 import { WhatsAppButton } from '../components/common/WhatsAppButton';
+import { useSiteSettings } from '../context/ThemeContext';
 
 const PROJECT_TYPES = [
   { id: 'Website', label: 'Website Development', icon: Globe, desc: 'Corporate, e-commerce, web portal, or custom coded site.' },
@@ -41,6 +42,7 @@ const COMMON_FEATURES = [
 ];
 
 export const CustomServicePage: React.FC = () => {
+  const { currency, usdToBdtRate } = useSiteSettings();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [projectType, setProjectType] = useState<string>('Website');
   const [projectTitle, setProjectTitle] = useState('');
@@ -443,7 +445,19 @@ export const CustomServicePage: React.FC = () => {
                             onChange={() => setBudgetRange(range)}
                             className="text-cyan-400 focus:ring-0"
                           />
-                          <span className="text-xs font-medium">{range}</span>
+                          <span className="text-xs font-medium">
+                            {range}
+                            {currency === 'BDT' && (
+                              <span className="text-cyan-400/80 font-mono text-[11px] ml-2">
+                                {range === 'Under $1,500' && `(~< ৳${(1500 * usdToBdtRate).toLocaleString()})`}
+                                {range === '$1,500 - $3,000' && `(~৳${(1500 * usdToBdtRate).toLocaleString()} - ৳${(3000 * usdToBdtRate).toLocaleString()})`}
+                                {range === '$3,000 - $5,000' && `(~৳${(3000 * usdToBdtRate).toLocaleString()} - ৳${(5000 * usdToBdtRate).toLocaleString()})`}
+                                {range === '$5,000 - $10,000' && `(~৳${(5000 * usdToBdtRate).toLocaleString()} - ৳${(10000 * usdToBdtRate).toLocaleString()})`}
+                                {range === '$10,000 - $25,000' && `(~৳${(10000 * usdToBdtRate).toLocaleString()} - ৳${(25000 * usdToBdtRate).toLocaleString()})`}
+                                {range === '$25,000+ (Enterprise)' && `(~৳${(25000 * usdToBdtRate).toLocaleString()}+)`}
+                              </span>
+                            )}
+                          </span>
                         </label>
                       ))}
                     </div>

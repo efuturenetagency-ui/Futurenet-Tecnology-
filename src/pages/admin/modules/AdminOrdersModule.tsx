@@ -13,6 +13,7 @@ import {
   Save,
   MessageSquare,
   ShieldAlert,
+  Printer,
 } from 'lucide-react';
 import { OrderItem, OrderStatus } from '../../../types';
 import { updateOrder } from '../../../lib/dataService';
@@ -249,17 +250,26 @@ export const AdminOrdersModule: React.FC<OrdersModuleProps> = ({ orders, onOrder
                   Reference: {selectedOrder.orderReference}
                 </h3>
               </div>
-              <button
-                type="button"
-                onClick={() => setSelectedOrder(null)}
-                className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-[#141C2E]"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="px-3.5 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-semibold flex items-center gap-1.5 cursor-pointer hover:bg-cyan-500/30 transition-colors"
+                >
+                  <Printer className="w-3.5 h-3.5" /> Print A4 Slip
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedOrder(null)}
+                  className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-[#141C2E]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Specifications Card */}
-            <div className="p-5 rounded-2xl bg-[#080B14] border border-[#263249] space-y-4 text-xs">
+            <div className="printable-document-root p-6 sm:p-8 rounded-2xl bg-[#080B14] border border-[#263249] space-y-4 text-xs font-sans">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pb-3 border-b border-[#263249]/60">
                 <div>
                   <span className="text-slate-400 block">Service:</span>

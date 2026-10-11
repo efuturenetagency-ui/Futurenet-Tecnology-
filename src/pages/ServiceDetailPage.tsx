@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { ServiceItem, ServicePackage } from '../types';
 import { WhatsAppButton } from '../components/common/WhatsAppButton';
+import { useSiteSettings } from '../context/ThemeContext';
 
 interface ServiceDetailPageProps {
   service: ServiceItem | null;
@@ -23,6 +24,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
   service,
   onOpenOrderModal,
 }) => {
+  const { formatPrice } = useSiteSettings();
   if (!service) {
     return (
       <div className="pt-40 pb-24 text-center space-y-4 max-w-md mx-auto px-4">
@@ -80,7 +82,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
               <div>
                 <span className="text-xs text-slate-400 block uppercase tracking-wider">Starting Rate</span>
                 <span className="text-2xl font-bold font-mono text-cyan-400">
-                  {service.startingPriceLabel || (service.price ? `$${service.price}` : 'Custom Scope')}
+                  {service.price ? formatPrice(service.price) : service.startingPriceLabel || 'Custom Scope'}
                 </span>
               </div>
 
@@ -179,7 +181,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
                       </div>
                       <div className="flex items-baseline gap-2">
                         <span className="text-3xl font-extrabold font-mono text-cyan-400">
-                          ${pkg.price}
+                          {formatPrice(pkg.price)}
                         </span>
                         <span className="text-xs text-[#A7B2C8]">/ {pkg.deliveryDays} Days Turnaround</span>
                       </div>

@@ -90,11 +90,49 @@ export interface SiteLayout {
   sectionPadding: string;
 }
 
+export interface CurrencySettings {
+  defaultCurrency: 'USD' | 'BDT';
+  usdToBdtRate: number;
+  fixedBdtPrices?: Record<string, number>;
+}
+
+export interface PrintSettings {
+  companyName: string;
+  tagline?: string;
+  address: string;
+  phone: string;
+  email: string;
+  taxId?: string;
+  logoUrl?: string;
+  footerNotice?: string;
+  paperSize?: 'A4';
+  orientation?: 'portrait' | 'landscape';
+}
+
+export interface LogoBrandingSettings {
+  logoUrl?: string;
+  logoLightUrl?: string;
+  logoDarkUrl?: string;
+  logoWidth?: number;
+  logoMaxHeight?: number;
+  logoAlignment?: 'left' | 'center';
+  showBrandText?: boolean;
+  showTagline?: boolean;
+}
+
 export interface SiteSettings {
   id?: string;
   brandName: string;
   tagline: string;
   logoUrl?: string;
+  logoLightUrl?: string;
+  logoDarkUrl?: string;
+  logoWidth?: number;
+  logoMaxHeight?: number;
+  logoAlignment?: 'left' | 'center';
+  showBrandText?: boolean;
+  showTagline?: boolean;
+  cyberStyleEnabled?: boolean;
   faviconUrl?: string;
   whatsappNumber: string;
   whatsappDefaultMessage: string;
@@ -111,6 +149,10 @@ export interface SiteSettings {
     youtube?: string;
   };
   colors: SiteColors;
+  lightColors?: SiteColors;
+  darkColors?: SiteColors;
+  currencySettings?: CurrencySettings;
+  printSettings?: PrintSettings;
   typography: SiteTypography;
   layout: SiteLayout;
   seo: {

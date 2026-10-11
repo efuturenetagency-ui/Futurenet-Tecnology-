@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, AlertCircle, ShieldCheck, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { ServiceItem, ServicePackage, OrderItem } from '../../types';
 import { createOrder } from '../../lib/dataService';
+import { useSiteSettings } from '../../context/ThemeContext';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   allServices,
   onOrderSuccess,
 }) => {
+  const { formatPrice } = useSiteSettings();
   const [selectedServiceId, setSelectedServiceId] = useState<string>('');
   const [selectedPkgName, setSelectedPkgName] = useState<string>('');
   const [fullName, setFullName] = useState('');
@@ -252,7 +254,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     <option value="">Custom Scope / Default Tier</option>
                     {currentService?.packages?.map(p => (
                       <option key={p.id} value={p.name}>
-                        {p.name} - ${p.price} ({p.deliveryDays}d delivery)
+                        {p.name} - {formatPrice(p.price)} ({p.deliveryDays}d delivery)
                       </option>
                     ))}
                   </select>

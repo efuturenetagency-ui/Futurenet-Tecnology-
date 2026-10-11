@@ -33,6 +33,7 @@ import {
   Wallet,
   DollarSign,
   TrendingUp,
+  Sliders,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useSiteSettings } from '../../context/ThemeContext';
@@ -62,6 +63,7 @@ import {
 
 // Module Components
 import { AdminDashboardModule } from './modules/AdminDashboardModule';
+import { AdminWebsiteSettingsModule } from './modules/AdminWebsiteSettingsModule';
 import { AdminOrdersModule } from './modules/AdminOrdersModule';
 import { AdminCustomRequestsModule } from './modules/AdminCustomRequestsModule';
 import { AdminServicesModule } from './modules/AdminServicesModule';
@@ -78,6 +80,7 @@ import { AdminUserRolesModule } from './modules/AdminUserRolesModule';
 import { AdminActivityLogsModule } from './modules/AdminActivityLogsModule';
 import { AdminBackupRestoreModule } from './modules/AdminBackupRestoreModule';
 import { AdminGeneralSettingsModule } from './modules/AdminGeneralSettingsModule';
+import { AdminAppearanceModule } from './modules/AdminAppearanceModule';
 import { AdminTypographyModule } from './modules/AdminTypographyModule';
 import { AdminSeoModule } from './modules/AdminSeoModule';
 import { AdminContactSettingsModule } from './modules/AdminContactSettingsModule';
@@ -218,7 +221,8 @@ export const AdminLayout: React.FC = () => {
     {
       group: 'Design & Marketing',
       items: [
-        { id: 'design-settings', label: 'Design Settings', icon: Palette },
+        { id: 'website-appearance', label: 'Appearance & Branding', icon: Sliders },
+        { id: 'design-settings', label: 'Color System & Tokens', icon: Palette },
         { id: 'typography', label: 'Typography', icon: Type },
         { id: 'seo', label: 'SEO Settings', icon: Globe },
         { id: 'whatsapp', label: 'WhatsApp Settings', icon: Smartphone },
@@ -416,6 +420,8 @@ export const AdminLayout: React.FC = () => {
               onSectionsUpdated={updated => setSections(updated)}
             />
           )}
+
+          {activeModule === 'website-appearance' && <AdminAppearanceModule />}
 
           {activeModule === 'design-settings' && <AdminDesignSettingsModule />}
 

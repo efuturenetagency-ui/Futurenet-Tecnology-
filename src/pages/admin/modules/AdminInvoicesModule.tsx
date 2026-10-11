@@ -696,7 +696,7 @@ export const AdminInvoicesModule: React.FC = () => {
             </div>
 
             {/* Document Content - Styled for Futuristic Agency & A4 Print */}
-            <div className="printable-invoice-sheet bg-[#080B14] border border-[#263249] rounded-2xl p-6 sm:p-8 space-y-8 font-sans text-xs">
+            <div className="printable-document-root printable-invoice-sheet bg-[#080B14] border border-[#263249] rounded-2xl p-6 sm:p-8 space-y-8 font-sans text-xs">
               {/* Top Branding Section */}
               <div className="flex flex-col sm:flex-row justify-between items-start gap-4 pb-6 border-b border-[#263249]">
                 <div>

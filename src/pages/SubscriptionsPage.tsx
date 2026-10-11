@@ -13,8 +13,10 @@ import {
 import { SubscriptionPlan, BillingInterval } from '../types';
 import { getSubscriptionPlans } from '../lib/dataService';
 import { SubscriptionModal } from '../components/common/SubscriptionModal';
+import { useSiteSettings } from '../context/ThemeContext';
 
 export const SubscriptionsPage: React.FC = () => {
+  const { formatPrice } = useSiteSettings();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [billingInterval, setBillingInterval] = useState<'monthly' | 'annual'>('monthly');
   const [selectedPlanForModal, setSelectedPlanForModal] = useState<SubscriptionPlan | null>(null);
@@ -117,13 +119,13 @@ export const SubscriptionsPage: React.FC = () => {
                 <div className="my-6 p-5 rounded-2xl bg-[#080B14] border border-[#263249]">
                   <div className="flex items-baseline gap-1">
                     <span className="text-3xl sm:text-4xl font-mono font-bold text-white">
-                      ${price}
+                      {formatPrice(price)}
                     </span>
                     <span className="text-xs text-slate-400 font-mono">/ month</span>
                   </div>
                   <span className="text-[11px] text-slate-500 font-mono block mt-1">
                     {billingInterval === 'annual'
-                      ? `Billed annually at $${plan.annualPrice || plan.monthlyPrice * 12 * 0.85}`
+                      ? `Billed annually at ${formatPrice(plan.annualPrice || plan.monthlyPrice * 12 * 0.85)}`
                       : 'Billed monthly. Cancel anytime.'}
                   </span>
                 </div>

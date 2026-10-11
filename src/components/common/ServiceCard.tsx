@@ -49,6 +49,7 @@ import {
 } from 'lucide-react';
 import { ServiceItem, ServicePackage } from '../../types';
 import { WhatsAppButton } from './WhatsAppButton';
+import { useSiteSettings } from '../../context/ThemeContext';
 
 interface ServiceCardProps {
   service: ServiceItem;
@@ -109,7 +110,12 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   onOpenOrder,
   featuredHighlight = false,
 }) => {
+  const { formatPrice } = useSiteSettings();
   const IconComponent = iconMap[service.icon] || Sparkles;
+
+  const displayPrice = service.price
+    ? `From ${formatPrice(service.price)}`
+    : service.startingPriceLabel || 'Custom Quote';
 
   return (
     <div
@@ -170,7 +176,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
           <div>
             <span className="text-slate-400 block text-[11px]">Investment</span>
             <span className="text-sm font-bold text-cyan-400 font-mono">
-              {service.startingPriceLabel || (service.price ? `$${service.price}` : 'Custom Quote')}
+              {displayPrice}
             </span>
           </div>
 

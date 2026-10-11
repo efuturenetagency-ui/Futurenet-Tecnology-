@@ -1,0 +1,450 @@
+{
+  "entities": {
+    "Admin": {
+      "title": "Admin",
+      "description": "Administrator account metadata and role assignment",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 255 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string" },
+        "roleId": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global design settings, branding, typography, contact, and WhatsApp config",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 50 },
+        "brandName": { "type": "string", "maxLength": 100 },
+        "tagline": { "type": "string", "maxLength": 200 },
+        "logoUrl": { "type": "string", "maxLength": 500 },
+        "whatsappNumber": { "type": "string", "maxLength": 50 },
+        "whatsappDefaultMessage": { "type": "string", "maxLength": 500 },
+        "supportEmail": { "type": "string", "maxLength": 200 },
+        "supportPhone": { "type": "string", "maxLength": 50 },
+        "officeAddress": { "type": "string", "maxLength": 300 },
+        "socialLinks": { "type": "object" },
+        "colors": { "type": "object" },
+        "typography": { "type": "object" },
+        "layout": { "type": "object" },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["brandName", "whatsappNumber"]
+    },
+    "ServiceCategory": {
+      "title": "ServiceCategory",
+      "description": "Category for grouping IT services",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "slug": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "order": { "type": "number" },
+        "isActive": { "type": "boolean" },
+        "icon": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["slug", "name", "order", "isActive"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Detailed IT service in the catalog",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "slug": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 150 },
+        "categoryId": { "type": "string", "maxLength": 100 },
+        "categoryName": { "type": "string", "maxLength": 100 },
+        "shortDescription": { "type": "string", "maxLength": 300 },
+        "fullDescription": { "type": "string", "maxLength": 5000 },
+        "icon": { "type": "string", "maxLength": 50 },
+        "image": { "type": "string", "maxLength": 500 },
+        "price": { "type": "number" },
+        "startingPriceLabel": { "type": "string", "maxLength": 50 },
+        "deliveryEstimate": { "type": "string", "maxLength": 50 },
+        "features": { "type": "array" },
+        "packages": { "type": "array" },
+        "isActive": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "displayOrder": { "type": "number" },
+        "seoTitle": { "type": "string", "maxLength": 120 },
+        "seoDescription": { "type": "string", "maxLength": 250 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["slug", "name", "categoryId", "shortDescription", "isActive"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Client service order with complete specifications and workflow status",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "orderReference": { "type": "string", "maxLength": 50 },
+        "serviceId": { "type": "string", "maxLength": 100 },
+        "serviceName": { "type": "string", "maxLength": 150 },
+        "packageName": { "type": "string", "maxLength": 100 },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "businessName": { "type": "string", "maxLength": 150 },
+        "email": { "type": "string", "maxLength": 255 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "whatsappNumber": { "type": "string", "maxLength": 50 },
+        "projectTitle": { "type": "string", "maxLength": 200 },
+        "requirements": { "type": "string", "maxLength": 5000 },
+        "budgetRange": { "type": "string", "maxLength": 100 },
+        "expectedDeliveryDate": { "type": "string", "maxLength": 50 },
+        "referenceUrls": { "type": "string", "maxLength": 1000 },
+        "preferredContactMethod": { "type": "string", "maxLength": 50 },
+        "privacyConsent": { "type": "boolean" },
+        "status": { "type": "string" },
+        "assignedManager": { "type": "string", "maxLength": 100 },
+        "internalNotes": { "type": "string", "maxLength": 5000 },
+        "quotationAmount": { "type": "number" },
+        "agreedBudget": { "type": "number" },
+        "paymentStatus": { "type": "string", "maxLength": 50 },
+        "customRequestId": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["orderReference", "serviceName", "fullName", "email", "phone", "requirements", "status"]
+    },
+    "CustomRequest": {
+      "title": "CustomRequest",
+      "description": "Multi-step custom project request that can be reviewed and converted to an order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "projectType": { "type": "string", "maxLength": 100 },
+        "projectTitle": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 5000 },
+        "features": { "type": "array" },
+        "referenceUrls": { "type": "string", "maxLength": 1000 },
+        "budgetRange": { "type": "string", "maxLength": 100 },
+        "expectedTimeline": { "type": "string", "maxLength": 100 },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "businessName": { "type": "string", "maxLength": 150 },
+        "email": { "type": "string", "maxLength": 255 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "whatsappNumber": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string" },
+        "convertedOrderId": { "type": "string", "maxLength": 100 },
+        "assignedManager": { "type": "string", "maxLength": 100 },
+        "internalNotes": { "type": "string", "maxLength": 5000 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["projectType", "projectTitle", "description", "fullName", "email", "phone", "status"]
+    },
+    "SubscriptionPlan": {
+      "title": "SubscriptionPlan",
+      "description": "Tiered recurring subscription plan",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 150 },
+        "slug": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "monthlyPrice": { "type": "number" },
+        "quarterlyPrice": { "type": "number" },
+        "halfYearlyPrice": { "type": "number" },
+        "annualPrice": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "includedServices": { "type": "array" },
+        "features": { "type": "array" },
+        "isVisible": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "autoRenew": { "type": "boolean" },
+        "cancellationPolicy": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name", "slug", "monthlyPrice", "currency", "isVisible"]
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "Customer active or pending recurring service subscription",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "subscriptionReference": { "type": "string", "maxLength": 50 },
+        "planId": { "type": "string", "maxLength": 100 },
+        "planName": { "type": "string", "maxLength": 150 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerEmail": { "type": "string", "maxLength": 255 },
+        "customerPhone": { "type": "string", "maxLength": 50 },
+        "billingInterval": { "type": "string", "maxLength": 30 },
+        "currentPrice": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "status": { "type": "string", "maxLength": 30 },
+        "startDate": { "type": "string", "maxLength": 50 },
+        "currentPeriodEnd": { "type": "string", "maxLength": 50 },
+        "nextBillingDate": { "type": "string", "maxLength": 50 },
+        "autoRenew": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["subscriptionReference", "planId", "customerName", "customerEmail", "status"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Auditable financial transaction record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "transactionReference": { "type": "string", "maxLength": 50 },
+        "relatedOrderId": { "type": "string", "maxLength": 100 },
+        "relatedSubscriptionId": { "type": "string", "maxLength": 100 },
+        "relatedInvoiceId": { "type": "string", "maxLength": 100 },
+        "paymentGateway": { "type": "string", "maxLength": 50 },
+        "paymentMethod": { "type": "string", "maxLength": 50 },
+        "transactionType": { "type": "string", "maxLength": 50 },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "status": { "type": "string", "maxLength": 30 },
+        "gatewayReference": { "type": "string", "maxLength": 100 },
+        "createdTimestamp": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["transactionReference", "paymentGateway", "amount", "currency", "status"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Official financial invoice and receipt record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "invoiceNumber": { "type": "string", "maxLength": 50 },
+        "issueDate": { "type": "string", "maxLength": 50 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerEmail": { "type": "string", "maxLength": 255 },
+        "items": { "type": "array" },
+        "subtotal": { "type": "number" },
+        "grandTotal": { "type": "number" },
+        "amountPaid": { "type": "number" },
+        "balanceRemaining": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "status": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["invoiceNumber", "customerName", "customerEmail", "grandTotal", "status"]
+    },
+    "ClientLogo": {
+      "title": "ClientLogo",
+      "description": "Client logo for trust proof display on homepage",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "clientName": { "type": "string", "maxLength": 150 },
+        "websiteUrl": { "type": "string", "maxLength": 500 },
+        "logoUrl": { "type": "string", "maxLength": 500 },
+        "altText": { "type": "string", "maxLength": 200 },
+        "isFeatured": { "type": "boolean" },
+        "isEnabled": { "type": "boolean" },
+        "displayOrder": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["clientName", "logoUrl", "isEnabled"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Unified communications channel conversation thread",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "channel": { "type": "string", "maxLength": 50 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerEmail": { "type": "string", "maxLength": 255 },
+        "status": { "type": "string", "maxLength": 30 },
+        "isReadByAdmin": { "type": "boolean" },
+        "lastMessageText": { "type": "string", "maxLength": 1000 },
+        "lastMessageTimestamp": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["channel", "customerName", "status"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Individual message in a conversation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "conversationId": { "type": "string", "maxLength": 100 },
+        "senderType": { "type": "string", "maxLength": 20 },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "text": { "type": "string", "maxLength": 3000 },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "channel": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["conversationId", "senderType", "text", "timestamp"]
+    },
+    "RoleDefinition": {
+      "title": "RoleDefinition",
+      "description": "Configurable user role and permission matrix",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "isSystemDefault": { "type": "boolean" },
+        "permissions": { "type": "object" }
+      },
+      "required": ["id", "name", "permissions"]
+    },
+    "PaymentGatewaySettings": {
+      "title": "PaymentGatewaySettings",
+      "description": "Configuration parameters for payment gateways",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 50 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "isEnabled": { "type": "boolean" },
+        "isSandbox": { "type": "boolean" },
+        "permittedCurrencies": { "type": "array" },
+        "isDefault": { "type": "boolean" }
+      },
+      "required": ["id", "displayName", "isEnabled"]
+    },
+    "InvoiceSettings": {
+      "title": "InvoiceSettings",
+      "description": "Company parameters, numbering rules, and header/footer for invoices",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 50 },
+        "companyName": { "type": "string", "maxLength": 150 },
+        "invoiceTitle": { "type": "string", "maxLength": 100 },
+        "invoiceNumberPrefix": { "type": "string", "maxLength": 20 },
+        "nextNumber": { "type": "number" },
+        "defaultCurrency": { "type": "string", "maxLength": 10 }
+      },
+      "required": ["companyName", "invoiceNumberPrefix"]
+    },
+    "ContactMessage": {
+      "title": "ContactMessage",
+      "description": "Inquiry submitted through the Contact Us form",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 255 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "subject": { "type": "string", "maxLength": 200 },
+        "message": { "type": "string", "maxLength": 3000 },
+        "privacyConsent": { "type": "boolean" },
+        "isRead": { "type": "boolean" },
+        "status": { "type": "string" },
+        "internalNotes": { "type": "string", "maxLength": 2000 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name", "email", "subject", "message"]
+    },
+    "PageSection": {
+      "title": "PageSection",
+      "description": "Manageable homepage or page section with draft/publish states and visibility controls",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "pageId": { "type": "string", "maxLength": 100 },
+        "sectionType": { "type": "string", "maxLength": 50 },
+        "title": { "type": "string", "maxLength": 150 },
+        "subtitle": { "type": "string", "maxLength": 300 },
+        "order": { "type": "number" },
+        "isEnabled": { "type": "boolean" },
+        "visibility": { "type": "object" },
+        "content": { "type": "object" },
+        "isPublished": { "type": "boolean" },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["sectionType", "title", "order", "isEnabled"]
+    },
+    "PortfolioProject": {
+      "title": "PortfolioProject",
+      "description": "Showcased technology or marketing project",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "title": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "client": { "type": "string", "maxLength": 100 },
+        "tags": { "type": "array" },
+        "image": { "type": "string", "maxLength": 500 },
+        "liveUrl": { "type": "string", "maxLength": 500 },
+        "featured": { "type": "boolean" },
+        "order": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["title", "category", "description", "isActive"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Client review or case quote",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "clientName": { "type": "string", "maxLength": 100 },
+        "company": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "maxLength": 100 },
+        "quote": { "type": "string", "maxLength": 1000 },
+        "rating": { "type": "number" },
+        "avatar": { "type": "string", "maxLength": 500 },
+        "isActive": { "type": "boolean" },
+        "order": { "type": "number" }
+      },
+      "required": ["clientName", "company", "quote", "isActive"]
+    },
+    "FAQ": {
+      "title": "FAQ",
+      "description": "Frequently asked question item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "category": { "type": "string", "maxLength": 100 },
+        "question": { "type": "string", "maxLength": 300 },
+        "answer": { "type": "string", "maxLength": 3000 },
+        "order": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["question", "answer", "isActive", "order"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Audit trail log of admin operations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "adminEmail": { "type": "string", "maxLength": 255 },
+        "action": { "type": "string", "maxLength": 100 },
+        "target": { "type": "string", "maxLength": 150 },
+        "details": { "type": "string", "maxLength": 1000 },
+        "timestamp": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["adminEmail", "action", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/siteSettings/{settingId}": { "schema": "SiteSettings", "description": "Website global configuration" },
+    "/serviceCategories/{categoryId}": { "schema": "ServiceCategory", "description": "Categorization for services" },
+    "/services/{serviceId}": { "schema": "Service", "description": "Catalog of IT services" },
+    "/orders/{orderId}": { "schema": "Order", "description": "Client orders for services" },
+    "/customRequests/{requestId}": { "schema": "CustomRequest", "description": "Custom project inquiries" },
+    "/subscriptionPlans/{planId}": { "schema": "SubscriptionPlan", "description": "Recurring subscription plans" },
+    "/subscriptions/{subscriptionId}": { "schema": "Subscription", "description": "Client service subscriptions" },
+    "/transactions/{transactionId}": { "schema": "Transaction", "description": "Auditable financial transactions" },
+    "/invoices/{invoiceId}": { "schema": "Invoice", "description": "Invoices and payment receipts" },
+    "/invoiceSettings/{settingsId}": { "schema": "InvoiceSettings", "description": "Invoice company branding and numbering rules" },
+    "/clientLogos/{logoId}": { "schema": "ClientLogo", "description": "Client logos displayed on website" },
+    "/conversations/{conversationId}": { "schema": "Conversation", "description": "Messaging conversation threads" },
+    "/conversations/{conversationId}/messages/{messageId}": { "schema": "ChatMessage", "description": "Messages inside conversation" },
+    "/roles/{roleId}": { "schema": "RoleDefinition", "description": "Configurable roles and permissions" },
+    "/paymentGatewaySettings/{gatewayId}": { "schema": "PaymentGatewaySettings", "description": "Payment gateway configs" },
+    "/contactMessages/{messageId}": { "schema": "ContactMessage", "description": "Customer contact messages" },
+    "/pageSections/{sectionId}": { "schema": "PageSection", "description": "Managed sections for website pages" },
+    "/portfolioProjects/{projectId}": { "schema": "PortfolioProject", "description": "Showcase portfolio projects" },
+    "/testimonials/{testimonialId}": { "schema": "Testimonial", "description": "Client testimonials" },
+    "/faqs/{faqId}": { "schema": "FAQ", "description": "Frequently asked questions" },
+    "/admins/{adminId}": { "schema": "Admin", "description": "Authorized administrators list" },
+    "/activityLogs/{logId}": { "schema": "ActivityLog", "description": "Administrative audit trail" }
+  }
+}

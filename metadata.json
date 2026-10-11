@@ -1,0 +1,6 @@
+{
+  "name": "Futurent Technology",
+  "description": "Full-stack IT agency website and content management system for digital consultancy services with integrated real-time project tracking capabilities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

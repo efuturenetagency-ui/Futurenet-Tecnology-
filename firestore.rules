@@ -1,0 +1,221 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == 'mdshihabhossen.web@gmail.com'
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Public readable site settings, admin manageable
+    match /siteSettings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public readable service categories, admin manageable
+    match /serviceCategories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public readable services, admin manageable
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public readable page sections, admin manageable
+    match /pageSections/{sectionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public readable portfolio projects, admin manageable
+    match /portfolioProjects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public readable testimonials, admin manageable
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public readable FAQs, admin manageable
+    match /faqs/{faqId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public readable subscription plans, admin manageable
+    match /subscriptionPlans/{planId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public readable client logos, admin manageable
+    match /clientLogos/{logoId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Validation for public orders creation
+    function isValidOrder(data) {
+      return data.keys().hasAll(['orderReference', 'serviceName', 'fullName', 'email', 'phone', 'requirements', 'status'])
+        && data.orderReference is string && data.orderReference.size() <= 50
+        && data.serviceName is string && data.serviceName.size() <= 150
+        && data.fullName is string && data.fullName.size() <= 100
+        && data.email is string && data.email.size() <= 255
+        && data.phone is string && data.phone.size() <= 50
+        && data.requirements is string && data.requirements.size() <= 5000;
+    }
+
+    // Orders: Public can create, only admin can read and update
+    match /orders/{orderId} {
+      allow read: if isAdmin();
+      allow create: if isValidId(orderId) && isValidOrder(incoming());
+      allow update, delete: if isAdmin();
+    }
+
+    // Validation for custom requests creation
+    function isValidCustomRequest(data) {
+      return data.keys().hasAll(['projectType', 'projectTitle', 'description', 'fullName', 'email', 'phone', 'status'])
+        && data.projectType is string && data.projectType.size() <= 100
+        && data.projectTitle is string && data.projectTitle.size() <= 200
+        && data.description is string && data.description.size() <= 5000
+        && data.fullName is string && data.fullName.size() <= 100
+        && data.email is string && data.email.size() <= 255
+        && data.phone is string && data.phone.size() <= 50;
+    }
+
+    // Custom requests: Public can create, only admin can read and update
+    match /customRequests/{requestId} {
+      allow read: if isAdmin();
+      allow create: if isValidId(requestId) && isValidCustomRequest(incoming());
+      allow update, delete: if isAdmin();
+    }
+
+    // Subscriptions: Public can create pending subscription request, admin can read and update
+    function isValidSubscription(data) {
+      return data.keys().hasAll(['subscriptionReference', 'planId', 'customerName', 'customerEmail', 'status'])
+        && data.subscriptionReference is string && data.subscriptionReference.size() <= 50
+        && data.planId is string && data.planId.size() <= 100
+        && data.customerName is string && data.customerName.size() <= 100
+        && data.customerEmail is string && data.customerEmail.size() <= 255;
+    }
+
+    match /subscriptions/{subId} {
+      allow read: if isAdmin();
+      allow create: if isValidId(subId) && isValidSubscription(incoming());
+      allow update, delete: if isAdmin();
+    }
+
+    // Validation for pending checkout transactions
+    function isValidPendingTransaction(data) {
+      return data.keys().hasAll(['transactionReference', 'amount', 'currency', 'status'])
+        && data.transactionReference is string && data.transactionReference.size() <= 50
+        && data.amount is number
+        && data.currency is string && data.currency.size() <= 10
+        && data.status == 'pending';
+    }
+
+    // Transactions: Public can register pending checkout and read pending status; Admin has full control
+    match /transactions/{transactionId} {
+      allow read: if isAdmin() || (resource.data.status == 'pending');
+      allow create: if isAdmin() || (isValidId(transactionId) && isValidPendingTransaction(incoming()));
+      allow update, delete: if isAdmin();
+    }
+
+    // Invoices: Admin access; clients with verified ID or via server
+    match /invoices/{invoiceId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Invoice Settings: Admin only
+    match /invoiceSettings/{settingsId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Payment Gateway Settings: Public can read basic config, Admin writes
+    match /paymentGatewaySettings/{gatewayId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Conversations (Live chat / messaging): Public can initiate, Admin manages
+    match /conversations/{conversationId} {
+      allow read: if true;
+      allow create: if isValidId(conversationId);
+      allow update: if true;
+      allow delete: if isAdmin();
+
+      match /messages/{messageId} {
+        allow read: if true;
+        allow create: if isValidId(messageId);
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // Contact messages: Public can submit, only admin can read and manage
+    function isValidContactMessage(data) {
+      return data.keys().hasAll(['name', 'email', 'subject', 'message'])
+        && data.name is string && data.name.size() <= 100
+        && data.email is string && data.email.size() <= 255
+        && data.subject is string && data.subject.size() <= 200
+        && data.message is string && data.message.size() <= 3000;
+    }
+
+    match /contactMessages/{messageId} {
+      allow read: if isAdmin();
+      allow create: if isValidId(messageId) && isValidContactMessage(incoming());
+      allow update, delete: if isAdmin();
+    }
+
+    // Roles and permissions: Admin only
+    match /roles/{roleId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Admins metadata collection
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Activity logs: Only admin can read or append
+    match /activityLogs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Email logs: Admin only
+    match /emailLogs/{logId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
